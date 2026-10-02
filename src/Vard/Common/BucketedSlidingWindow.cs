@@ -94,6 +94,73 @@ namespace Vard.Common
             }
         }
 
+        public bool TryConsume(int permits, int permitLimit, out TimeSpan retryAfter, out int currentCount)
+        {
+            long now = _ticksProvider();
+            lock (_syncLock)
+            {
+                long windowStart = now - _samplingDurationTicks;
+                int totalCount = 0;
+                long oldestBucketStartTicks = long.MaxValue;
+
+                for (int i = 0; i < _bucketCount; i++)
+                {
+                    var b = _buckets[i];
+                    if (b.BucketStartTicks > 0 && b.BucketStartTicks >= windowStart && b.BucketStartTicks <= now)
+                    {
+                        int bucketTotal = b.SuccessCount + b.FailureCount;
+                        totalCount += bucketTotal;
+                        if (bucketTotal > 0 && b.BucketStartTicks < oldestBucketStartTicks)
+                        {
+                            oldestBucketStartTicks = b.BucketStartTicks;
+                        }
+                    }
+                }
+
+                currentCount = totalCount;
+                if (totalCount + permits <= permitLimit)
+                {
+                    Bucket currentBucket = GetOrCreateCurrentBucket(now);
+                    currentBucket.SuccessCount += permits;
+                    retryAfter = TimeSpan.Zero;
+                    return true;
+                }
+
+                // Calcula o tempo até o bucket mais antigo sair da janela
+                if (oldestBucketStartTicks != long.MaxValue)
+                {
+                    long expiryTicks = (oldestBucketStartTicks + _bucketDurationTicks + _samplingDurationTicks) - now;
+                    retryAfter = expiryTicks > 0 ? TimeSpan.FromTicks(expiryTicks) : TimeSpan.FromMilliseconds(1);
+                }
+                else
+                {
+                    retryAfter = TimeSpan.FromTicks(_bucketDurationTicks);
+                }
+                return false;
+            }
+        }
+
+        public int GetCurrentCount()
+        {
+            long now = _ticksProvider();
+            lock (_syncLock)
+            {
+                long windowStart = now - _samplingDurationTicks;
+                int totalCount = 0;
+
+                for (int i = 0; i < _bucketCount; i++)
+                {
+                    var b = _buckets[i];
+                    if (b.BucketStartTicks > 0 && b.BucketStartTicks >= windowStart && b.BucketStartTicks <= now)
+                    {
+                        totalCount += b.SuccessCount + b.FailureCount;
+                    }
+                }
+
+                return totalCount;
+            }
+        }
+
         public void Reset()
         {
             lock (_syncLock)

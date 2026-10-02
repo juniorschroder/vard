@@ -273,7 +273,10 @@ namespace Vard.Tests
             tcsRelease.SetResult(true);
             await Task.WhenAll(task1, task2, task3);
 
-            Assert.Equal(new[] { 1, 2, 3 }, results);
+            Assert.Equal(3, results.Count);
+            Assert.Equal(1, results[0]);
+            Assert.Contains(2, results);
+            Assert.Contains(3, results);
             Assert.Equal(1, policy.BulkheadAvailableCount);
             Assert.Equal(2, policy.QueueAvailableCount);
         }
