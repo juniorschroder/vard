@@ -95,5 +95,33 @@ namespace Vard.Builders
             Action<IDictionary<string, object>?>? onBulkheadRejected = null,
             Func<IDictionary<string, object>?, Task>? onBulkheadRejectedAsync = null)
             => new BulkheadPolicy(maxParallelization, maxQueuedActions, onBulkheadRejected, onBulkheadRejectedAsync);
+
+        public static TokenBucketRateLimiterPolicy TokenBucket(
+            int maxTokens,
+            double tokensPerSecond,
+            TimeSpan? maxWaitTime = null,
+            Action<TimeSpan, IDictionary<string, object>?>? onRateLimitExceeded = null,
+            Func<TimeSpan, IDictionary<string, object>?, Task>? onRateLimitExceededAsync = null)
+            => new TokenBucketRateLimiterPolicy(
+                maxTokens,
+                tokensPerSecond,
+                maxWaitTime,
+                onRateLimitExceeded,
+                onRateLimitExceededAsync);
+
+        public static SlidingWindowRateLimiterPolicy SlidingWindow(
+            int permitLimit,
+            TimeSpan windowDuration,
+            int segmentsPerWindow = 10,
+            TimeSpan? maxWaitTime = null,
+            Action<TimeSpan, IDictionary<string, object>?>? onRateLimitExceeded = null,
+            Func<TimeSpan, IDictionary<string, object>?, Task>? onRateLimitExceededAsync = null)
+            => new SlidingWindowRateLimiterPolicy(
+                permitLimit,
+                windowDuration,
+                segmentsPerWindow,
+                maxWaitTime,
+                onRateLimitExceeded,
+                onRateLimitExceededAsync);
     }
 }
