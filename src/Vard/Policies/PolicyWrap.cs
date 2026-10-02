@@ -43,8 +43,20 @@ namespace Vard.Policies
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException("PolicyWrap execution is implemented in Phase 2+.");
 
+        public Task<TResult> ExecuteAsync<TResult>(
+            Func<IDictionary<string, object>, CancellationToken, Task<TResult>> action,
+            IDictionary<string, object> context,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException("PolicyWrap execution is implemented in Phase 2+.");
+
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(
             Func<CancellationToken, Task<TResult>> action,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException("PolicyWrap execution is implemented in Phase 2+.");
+
+        public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(
+            Func<IDictionary<string, object>, CancellationToken, Task<TResult>> action,
+            IDictionary<string, object> context,
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException("PolicyWrap execution is implemented in Phase 2+.");
     }
