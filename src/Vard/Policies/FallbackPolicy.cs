@@ -201,6 +201,7 @@ namespace Vard.Policies
             {
                 _onFallbackSync?.Invoke(ex, context);
                 _fallbackActionSync?.Invoke(ex, context);
+                if (typeof(TResult) == typeof(Vard.Abstractions.Void)) return (TResult)(object)Vard.Abstractions.Void.Instance;
                 return default!;
             }
         }
@@ -251,6 +252,7 @@ namespace Vard.Policies
                 else
                     _fallbackActionSync?.Invoke(ex, context);
 
+                if (typeof(TResult) == typeof(Vard.Abstractions.Void)) return (TResult)(object)Vard.Abstractions.Void.Instance;
                 return default!;
             }
         }

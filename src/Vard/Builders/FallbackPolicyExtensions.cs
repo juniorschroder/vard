@@ -57,5 +57,27 @@ namespace Vard.Builders
             var b = (PolicyBuilder)builder;
             return new FallbackPolicy(b.Condition, (_, _) => fallbackAction(), onFallbackSync: onFallback);
         }
+
+        public static FallbackPolicy Fallback(
+            this IPolicyBuilder builder,
+            Action<Exception?, IDictionary<string, object>?> fallbackAction,
+            Action<Exception?, IDictionary<string, object>?>? onFallback = null)
+        {
+            var b = (PolicyBuilder)builder;
+            return new FallbackPolicy(b.Condition, fallbackAction, onFallbackSync: onFallback);
+        }
+
+        public static FallbackPolicy FallbackAsync(
+            this IPolicyBuilder builder,
+            Func<Exception?, IDictionary<string, object>?, CancellationToken, Task> fallbackActionAsync,
+            Func<Exception?, IDictionary<string, object>?, Task>? onFallbackAsync = null)
+        {
+            var b = (PolicyBuilder)builder;
+            return new FallbackPolicy(
+                b.Condition,
+                fallbackActionSync: null,
+                fallbackActionAsync: fallbackActionAsync,
+                onFallbackAsync: onFallbackAsync);
+        }
     }
 }
