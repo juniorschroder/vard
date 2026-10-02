@@ -88,5 +88,12 @@ namespace Vard.Builders
                 onBreakAsync,
                 onResetAsync,
                 onHalfOpenAsync);
+
+        public static BulkheadPolicy Bulkhead(
+            int maxParallelization,
+            int maxQueuedActions = 0,
+            Action<IDictionary<string, object>?>? onBulkheadRejected = null,
+            Func<IDictionary<string, object>?, Task>? onBulkheadRejectedAsync = null)
+            => new BulkheadPolicy(maxParallelization, maxQueuedActions, onBulkheadRejected, onBulkheadRejectedAsync);
     }
 }
