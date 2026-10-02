@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Vard.Abstractions;
@@ -35,19 +36,25 @@ namespace Vard.Policies
             if (action == null) throw new ArgumentNullException(nameof(action));
 
             var task = Task.Run(() => action(context));
-            bool completed = task.Wait(_timeout);
+            bool completed;
+            try
+            {
+                completed = task.Wait(_timeout);
+            }
+            catch (AggregateException ae)
+            {
+                var baseEx = ae.Flatten().InnerExceptions.Count == 1 ? ae.Flatten().InnerExceptions[0] : ae;
+                ExceptionDispatchInfo.Capture(baseEx).Throw();
+                throw;
+            }
+
             if (!completed)
             {
                 _onTimeoutSync?.Invoke(context, _timeout);
                 throw new TimeoutRejectedException(_timeout);
             }
 
-            if (task.IsFaulted && task.Exception != null)
-            {
-                throw task.Exception.InnerExceptions.Count == 1 ? task.Exception.InnerExceptions[0] : task.Exception;
-            }
-
-            return task.Result;
+            return task.GetAwaiter().GetResult();
         }
 
         public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action)

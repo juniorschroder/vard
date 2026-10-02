@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Vard.Abstractions;
 using Vard.Policies;
 
@@ -33,8 +35,11 @@ namespace Vard.Builders
         public static RetryPolicy RetryWithBackoff(int count, TimeSpan initialDelay, BackoffType backoffType = BackoffType.Fixed, bool useJitter = false)
             => Handle<Exception>().RetryWithBackoff(count, initialDelay, backoffType, useJitter);
 
-        public static TimeoutPolicy Timeout(TimeSpan timeout)
-            => new TimeoutPolicy(timeout);
+        public static TimeoutPolicy Timeout(
+            TimeSpan timeout,
+            Action<IDictionary<string, object>?, TimeSpan>? onTimeout = null,
+            Func<IDictionary<string, object>?, TimeSpan, Task>? onTimeoutAsync = null)
+            => new TimeoutPolicy(timeout, onTimeout, onTimeoutAsync);
 
         public static FallbackPolicy<TResult> Fallback<TResult>(TResult fallbackValue)
             => Handle<Exception>().Fallback(fallbackValue);
