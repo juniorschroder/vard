@@ -111,13 +111,10 @@ namespace Vard.Policies
             lock (_stateLock)
             {
                 _slidingWindow.Reset();
-                if (_state != CircuitState.Closed)
-                {
-                    _state = CircuitState.Closed;
-                    _lastException = null;
-                    _isTrialRunning = 0;
-                    onResetAction = () => InvokeOnReset(null);
-                }
+                _state = CircuitState.Closed;
+                _lastException = null;
+                _isTrialRunning = 0;
+                onResetAction = () => InvokeOnReset(null);
             }
             onResetAction?.Invoke();
         }

@@ -97,18 +97,11 @@ namespace Vard.Policies
             Action? onResetAction = null;
             lock (_stateLock)
             {
-                if (_state != CircuitState.Closed)
-                {
-                    _state = CircuitState.Closed;
-                    _consecutiveFailures = 0;
-                    _lastException = null;
-                    _isTrialRunning = 0;
-                    onResetAction = () => InvokeOnReset(null);
-                }
-                else
-                {
-                    _consecutiveFailures = 0;
-                }
+                _state = CircuitState.Closed;
+                _consecutiveFailures = 0;
+                _lastException = null;
+                _isTrialRunning = 0;
+                onResetAction = () => InvokeOnReset(null);
             }
             onResetAction?.Invoke();
         }
