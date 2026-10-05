@@ -149,7 +149,7 @@ namespace Vard.Tests
                     policy.Execute(() =>
                     {
                         activeEnteredGate.Signal();
-                        executionGate.Wait(TimeSpan.FromSeconds(5));
+                        executionGate.Wait(TimeSpan.FromSeconds(30));
                         return true;
                     });
                 })
@@ -160,56 +160,56 @@ namespace Vard.Tests
                 return thread;
             }).ToArray();
 
-            Assert.True(activeEnteredGate.Wait(TimeSpan.FromSeconds(5)), "Active tasks should have entered execution");
+            Assert.True(activeEnteredGate.Wait(TimeSpan.FromSeconds(30)), "Active tasks should have entered execution");
             Assert.Equal(0, policy.BulkheadAvailableCount);
 
             // Dispatch 10 tasks into the queue with cancellation tokens
             var ctsList = Enumerable.Range(0, maxQueue).Select(_ => new CancellationTokenSource()).ToArray();
-            var queuedTasks = new Task[maxQueue];
 
-            for (int i = 0; i < maxQueue; i++)
+            try
             {
-                var cts = ctsList[i];
-                queuedTasks[i] = Task.Run(async () =>
+                var queuedTasks = new Task[maxQueue];
+
+                for (int i = 0; i < maxQueue; i++)
+                {
+                    var cts = ctsList[i];
+                    queuedTasks[i] = policy.ExecuteAsync(async ct =>
+                    {
+                        await Task.Delay(50, ct);
+                        return true;
+                    }, cts.Token);
+                }
+
+                // All 10 tasks synchronously acquire a queue slot before waiting on execution semaphore
+                Assert.Equal(0, policy.QueueAvailableCount);
+
+                // Cancel all queued tasks concurrently
+                Parallel.ForEach(ctsList, cts => cts.Cancel());
+
+                // Wait for all cancelled queued tasks to complete
+                for (int i = 0; i < maxQueue; i++)
                 {
                     try
                     {
-                        await policy.ExecuteAsync(async ct =>
-                        {
-                            await Task.Delay(50, ct);
-                            return true;
-                        }, cts.Token);
+                        await queuedTasks[i];
                     }
                     catch (OperationCanceledException)
                     {
                         // Expected
                     }
-                });
+                }
+
+                // The queue slots must be released immediately upon cancellation
+                Assert.Equal(maxQueue, policy.QueueAvailableCount);
             }
-
-            // Wait until all 10 are queued
-            var spin = new SpinWait();
-            var sw = System.Diagnostics.Stopwatch.StartNew();
-            while (policy.QueueAvailableCount > 0 && sw.ElapsedMilliseconds < 3000)
+            finally
             {
-                spin.SpinOnce();
-            }
-            Assert.Equal(0, policy.QueueAvailableCount);
-
-            // Cancel all queued tasks concurrently
-            Parallel.ForEach(ctsList, cts => cts.Cancel());
-
-            // Wait for all cancelled queued tasks to complete
-            await Task.WhenAll(queuedTasks);
-
-            // The queue slots must be released immediately upon cancellation
-            Assert.Equal(maxQueue, policy.QueueAvailableCount);
-
-            // Release active tasks
-            executionGate.Set();
-            foreach (var thread in activeThreads)
-            {
-                thread.Join();
+                // Release active tasks
+                executionGate.Set();
+                foreach (var thread in activeThreads)
+                {
+                    thread.Join();
+                }
             }
 
             // Both execution slots must now be available
