@@ -125,6 +125,11 @@ namespace Vard.Tests
             Assert.Equal(maxQueue, policy.QueueAvailableCount);
         }
 
+        static BulkheadConcurrencyTests()
+        {
+            ThreadPool.SetMinThreads(100, 100);
+        }
+
         [Fact]
         public async Task Bulkhead_ConcurrentCancellations_DoNotLeakQueueOrExecutionSlots()
         {
@@ -136,16 +141,24 @@ namespace Vard.Tests
             using var executionGate = new ManualResetEventSlim(false);
             using var activeEnteredGate = new CountdownEvent(maxParallel);
 
-            // Fill the 2 parallel slots with long-running tasks
-            var activeTasks = Enumerable.Range(0, maxParallel).Select(_ => Task.Run(() =>
+            // Fill the 2 parallel slots with long-running tasks on dedicated threads
+            var activeThreads = Enumerable.Range(0, maxParallel).Select(_ =>
             {
-                policy.Execute(() =>
+                var thread = new Thread(() =>
                 {
-                    activeEnteredGate.Signal();
-                    executionGate.Wait(TimeSpan.FromSeconds(5));
-                    return true;
-                });
-            })).ToArray();
+                    policy.Execute(() =>
+                    {
+                        activeEnteredGate.Signal();
+                        executionGate.Wait(TimeSpan.FromSeconds(5));
+                        return true;
+                    });
+                })
+                {
+                    IsBackground = true
+                };
+                thread.Start();
+                return thread;
+            }).ToArray();
 
             Assert.True(activeEnteredGate.Wait(TimeSpan.FromSeconds(5)), "Active tasks should have entered execution");
             Assert.Equal(0, policy.BulkheadAvailableCount);
@@ -194,7 +207,10 @@ namespace Vard.Tests
 
             // Release active tasks
             executionGate.Set();
-            await Task.WhenAll(activeTasks);
+            foreach (var thread in activeThreads)
+            {
+                thread.Join();
+            }
 
             // Both execution slots must now be available
             Assert.Equal(maxParallel, policy.BulkheadAvailableCount);
