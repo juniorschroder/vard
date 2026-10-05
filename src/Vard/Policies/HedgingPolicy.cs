@@ -409,7 +409,7 @@ namespace Vard.Policies
                                 {
                                     await _onHedgingResultAsync(attemptResult.Result, attemptResult.AttemptNumber, totalSw.Elapsed, context).ConfigureAwait(false);
                                 }
-                                else if (_onHedgingResultSync != null)
+                                if (_onHedgingResultSync != null)
                                 {
                                     _onHedgingResultSync(attemptResult.Result, attemptResult.AttemptNumber, totalSw.Elapsed, context);
                                 }
