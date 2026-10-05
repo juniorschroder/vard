@@ -145,5 +145,12 @@ namespace Vard.Builders
                 hedgingDelayProvider,
                 onHedgingResult,
                 onHedgingResultAsync);
+
+        /// <summary>
+        /// Compõe múltiplas políticas de resiliência em um pipeline outside-in.
+        /// A primeira política é a mais externa e a última é a mais interna.
+        /// </summary>
+        public static PolicyWrap Wrap(params IPolicy[] policies)
+            => PolicyWrapExtensions.Wrap(policies);
     }
 }
