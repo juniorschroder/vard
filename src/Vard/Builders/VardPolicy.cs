@@ -123,5 +123,27 @@ namespace Vard.Builders
                 maxWaitTime,
                 onRateLimitExceeded,
                 onRateLimitExceededAsync);
+
+        public static HedgingPolicy Hedging(
+            int maxHedges = 1,
+            TimeSpan hedgingDelay = default,
+            Action<object?, int, TimeSpan, IDictionary<string, object>?>? onHedgingResult = null,
+            Func<object?, int, TimeSpan, IDictionary<string, object>?, Task>? onHedgingResultAsync = null)
+            => Handle<Exception>().Hedging(
+                maxHedges,
+                hedgingDelay,
+                onHedgingResult,
+                onHedgingResultAsync);
+
+        public static HedgingPolicy Hedging(
+            int maxHedges,
+            Func<int, TimeSpan> hedgingDelayProvider,
+            Action<object?, int, TimeSpan, IDictionary<string, object>?>? onHedgingResult = null,
+            Func<object?, int, TimeSpan, IDictionary<string, object>?, Task>? onHedgingResultAsync = null)
+            => Handle<Exception>().Hedging(
+                maxHedges,
+                hedgingDelayProvider,
+                onHedgingResult,
+                onHedgingResultAsync);
     }
 }
