@@ -11,3 +11,7 @@ TestResults/
 artifacts/
 *.nupkg
 *.snupkg
+
+# IDE / Editor artifacts
+.idea/
+.vscode/
