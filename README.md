@@ -37,6 +37,8 @@
   - [Pipeline Especulativo de Baixa Latência](#pipeline-especulativo-de-baixa-latência)
 - [Observabilidade, Contexto & PolicyResult](#observabilidade-contexto--policyresult)
 - [Vard vs Polly](#vard-vs-polly)
+- [Roadmap & Próximas Versões](#roadmap--próximas-versões)
+- [Projeto de Demonstração (Demo)](#projeto-de-demonstração-demo)
 - [Qualidade & Testes](#qualidade--testes)
 - [Licença](#licença)
 
@@ -527,6 +529,43 @@ else
 | **Recarga do Token Bucket** | **Lazy matemática** (sem timers em background consumindo ThreadPool) | Depende de instâncias de `System.Threading.Timer` |
 | **Single Pilot Request em Half-Open** | **Atômico** com `Interlocked.CompareExchange` | Presente, com abstrações internas maiores |
 | **Curva de Aprendizado & API** | **Direta e fluente**, unificada em uma única namespace | Bifurcada entre arquitetura legada (v7) e nova (v8) |
+
+---
+
+## Roadmap & Próximas Versões
+
+O desenvolvimento contínuo do **Vard** segue um planejamento estruturado para evoluir suas capacidades mantendo a integridade de performance e simplicidade da biblioteca:
+
+### 🚀 v1.1.0 — Políticas e Utilitários Avançados (Zero Dependencies)
+- **`PolicyRegistry`:** Repositório nomeado centralizado para registrar, recuperar, compor e reutilizar políticas e pipelines de forma compartilhada na aplicação.
+- **`CachePolicy`:** Política de cache em memória para memorizar resultados de delegates idempotentes e evitar execuções desnecessárias.
+- **`FallbackPolicy` Aprimorado:** Suporte a chave e estratégias dinâmicas de degradação graciosa.
+- **Resiliência em Streaming (`IAsyncEnumerable<T>`):** Suporte nativo a operações de fluxo contínuo de dados com tratamento de `Retry` e `Timeout` por item ou pelo fluxo completo.
+
+### 🌐 v2.0.0 — Pacotes de Integração com o Ecossistema Moderno .NET
+Pacotes satélites desacoplados (mantendo a lib core `Vard` 100% livre de dependências):
+- **`Vard.Extensions.DependencyInjection`:** Métodos fluentes `services.AddVard()` para registro declarativo e injeção de dependência no container nativo do .NET.
+- **`Vard.Extensions.Logging` / Telemetria:** Integração transparente com `ILogger` e exportação nativa de métricas e distributed tracing compatíveis com OpenTelemetry e Serilog.
+
+---
+
+## Projeto de Demonstração (Demo)
+
+A solution inclui um projeto de console executável com exemplos interativos e coloridos para cada política e pipeline:
+
+```bash
+# Executar a demonstração interativa
+dotnet run --project demo/Vard.Demo/Vard.Demo.csproj
+```
+
+O projeto demonstra em tempo real:
+1. **Retry** com backoff exponencial e AWS Full Jitter.
+2. **Circuit Breaker** com contagem consecutiva, fast-fail e *Single Pilot Request* em Half-Open.
+3. **Timeout & Fallback** com cancelamento cooperativo e resposta alternativa segura.
+4. **Bulkhead** com contenção de concorrência e fila de espera.
+5. **Rate Limiter** com recarga matemática contínua (Token Bucket).
+6. **Hedging** com execuções especulativas paralelas e cancelamento cooperativo do perdedor.
+7. **Pipeline Corporativo Completo** (`Fallback -> Retry -> CircuitBreaker -> Timeout`) com enriquecimento de `Context` e CorrelationId.
 
 ---
 
