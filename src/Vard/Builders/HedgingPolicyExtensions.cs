@@ -11,6 +11,15 @@ namespace Vard.Builders
     /// </summary>
     public static class HedgingPolicyExtensions
     {
+        /// <summary>
+        /// Configura uma política de Hedging não-genérica com atraso estático entre execuções especulativas.
+        /// </summary>
+        /// <param name="builder">O builder de política fluente.</param>
+        /// <param name="maxHedges">Número máximo de chamadas paralelas simultâneas adicionais.</param>
+        /// <param name="hedgingDelay">Atraso temporal antes de disparar o hedge concorrente subsequente.</param>
+        /// <param name="onHedgingResult">Callback síncrono opcional disparado ao receber resultado hedged.</param>
+        /// <param name="onHedgingResultAsync">Callback assíncrono opcional disparado ao receber resultado hedged.</param>
+        /// <returns>Uma nova instância de <see cref="HedgingPolicy"/>.</returns>
         public static HedgingPolicy Hedging(
             this IPolicyBuilder builder,
             int maxHedges = 1,
@@ -28,6 +37,15 @@ namespace Vard.Builders
                 onHedgingResultAsync);
         }
 
+        /// <summary>
+        /// Configura uma política de Hedging não-genérica com atraso dinâmico calculado por tentativa.
+        /// </summary>
+        /// <param name="builder">O builder de política fluente.</param>
+        /// <param name="maxHedges">Número máximo de chamadas paralelas simultâneas adicionais.</param>
+        /// <param name="hedgingDelayProvider">Função que calcula o tempo de espera dado o número do hedge.</param>
+        /// <param name="onHedgingResult">Callback síncrono opcional disparado ao receber resultado hedged.</param>
+        /// <param name="onHedgingResultAsync">Callback assíncrono opcional disparado ao receber resultado hedged.</param>
+        /// <returns>Uma nova instância de <see cref="HedgingPolicy"/>.</returns>
         public static HedgingPolicy Hedging(
             this IPolicyBuilder builder,
             int maxHedges,
@@ -45,6 +63,16 @@ namespace Vard.Builders
                 onHedgingResultAsync);
         }
 
+        /// <summary>
+        /// Configura uma política tipada de Hedging com atraso estático entre tentativas.
+        /// </summary>
+        /// <typeparam name="TResult">O tipo de resultado da ação.</typeparam>
+        /// <param name="builder">O builder de política fluente.</param>
+        /// <param name="maxHedges">Número máximo de chamadas paralelas simultâneas adicionais.</param>
+        /// <param name="hedgingDelay">Atraso temporal antes de disparar o hedge concorrente subsequente.</param>
+        /// <param name="onHedgingResult">Callback tipado síncrono opcional.</param>
+        /// <param name="onHedgingResultAsync">Callback tipado assíncrono opcional.</param>
+        /// <returns>Uma nova instância de <see cref="HedgingPolicy{TResult}"/>.</returns>
         public static HedgingPolicy<TResult> Hedging<TResult>(
             this IPolicyBuilder builder,
             int maxHedges = 1,
@@ -62,6 +90,16 @@ namespace Vard.Builders
                 onHedgingResultAsync);
         }
 
+        /// <summary>
+        /// Configura uma política tipada de Hedging com atraso dinâmico calculado por tentativa.
+        /// </summary>
+        /// <typeparam name="TResult">O tipo de resultado da ação.</typeparam>
+        /// <param name="builder">O builder de política fluente.</param>
+        /// <param name="maxHedges">Número máximo de chamadas paralelas simultâneas adicionais.</param>
+        /// <param name="hedgingDelayProvider">Função que calcula o tempo de espera dado o número do hedge.</param>
+        /// <param name="onHedgingResult">Callback tipado síncrono opcional.</param>
+        /// <param name="onHedgingResultAsync">Callback tipado assíncrono opcional.</param>
+        /// <returns>Uma nova instância de <see cref="HedgingPolicy{TResult}"/>.</returns>
         public static HedgingPolicy<TResult> Hedging<TResult>(
             this IPolicyBuilder builder,
             int maxHedges,

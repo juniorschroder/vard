@@ -13,6 +13,11 @@ namespace Vard.Builders
     /// </summary>
     public static class PolicyActionExtensions
     {
+        /// <summary>
+        /// Executa uma ação síncrona sem retorno protegida pela política.
+        /// </summary>
+        /// <param name="policy">A política de resiliência a ser aplicada.</param>
+        /// <param name="action">A ação sem retorno a ser executada.</param>
         public static void Execute(this IPolicy policy, Action action)
         {
             if (policy == null) throw new ArgumentNullException(nameof(policy));
@@ -25,6 +30,12 @@ namespace Vard.Builders
             });
         }
 
+        /// <summary>
+        /// Executa uma ação síncrona com contexto sem retorno protegida pela política.
+        /// </summary>
+        /// <param name="policy">A política de resiliência a ser aplicada.</param>
+        /// <param name="action">A ação sem retorno a ser executada com contexto.</param>
+        /// <param name="context">O dicionário de contexto compartilhado.</param>
         public static void Execute(
             this IPolicy policy,
             Action<IDictionary<string, object>> action,
@@ -40,6 +51,12 @@ namespace Vard.Builders
             }, context);
         }
 
+        /// <summary>
+        /// Executa uma ação síncrona sem retorno e captura o resultado da execução.
+        /// </summary>
+        /// <param name="policy">A política de resiliência a ser aplicada.</param>
+        /// <param name="action">A ação sem retorno a ser executada.</param>
+        /// <returns>Um <see cref="PolicyResult{Void}"/> contendo o status da execução.</returns>
         public static PolicyResult<Void> ExecuteAndCapture(this IPolicy policy, Action action)
         {
             if (policy == null) throw new ArgumentNullException(nameof(policy));
@@ -52,6 +69,13 @@ namespace Vard.Builders
             });
         }
 
+        /// <summary>
+        /// Executa uma ação síncrona com contexto sem retorno e captura o resultado da execução.
+        /// </summary>
+        /// <param name="policy">A política de resiliência a ser aplicada.</param>
+        /// <param name="action">A ação sem retorno a ser executada com contexto.</param>
+        /// <param name="context">O dicionário de contexto compartilhado.</param>
+        /// <returns>Um <see cref="PolicyResult{Void}"/> contendo o status da execução.</returns>
         public static PolicyResult<Void> ExecuteAndCapture(
             this IPolicy policy,
             Action<IDictionary<string, object>> action,
@@ -67,6 +91,13 @@ namespace Vard.Builders
             }, context);
         }
 
+        /// <summary>
+        /// Executa uma ação assíncrona sem retorno protegida pela política.
+        /// </summary>
+        /// <param name="policy">A política assíncrona a ser aplicada.</param>
+        /// <param name="action">A ação assíncrona sem retorno a ser executada.</param>
+        /// <param name="cancellationToken">Token de cancelamento da operação.</param>
+        /// <returns>Uma tarefa representando a execução assíncrona.</returns>
         public static Task ExecuteAsync(
             this IAsyncPolicy policy,
             Func<CancellationToken, Task> action,
@@ -82,6 +113,14 @@ namespace Vard.Builders
             }, cancellationToken);
         }
 
+        /// <summary>
+        /// Executa uma ação assíncrona com contexto sem retorno protegida pela política.
+        /// </summary>
+        /// <param name="policy">A política assíncrona a ser aplicada.</param>
+        /// <param name="action">A ação assíncrona sem retorno a ser executada com contexto.</param>
+        /// <param name="context">O dicionário de contexto compartilhado.</param>
+        /// <param name="cancellationToken">Token de cancelamento da operação.</param>
+        /// <returns>Uma tarefa representando a execução assíncrona.</returns>
         public static Task ExecuteAsync(
             this IAsyncPolicy policy,
             Func<IDictionary<string, object>, CancellationToken, Task> action,
@@ -98,6 +137,13 @@ namespace Vard.Builders
             }, context, cancellationToken);
         }
 
+        /// <summary>
+        /// Executa uma ação assíncrona sem retorno e captura o resultado da execução.
+        /// </summary>
+        /// <param name="policy">A política assíncrona a ser aplicada.</param>
+        /// <param name="action">A ação assíncrona sem retorno a ser executada.</param>
+        /// <param name="cancellationToken">Token de cancelamento da operação.</param>
+        /// <returns>Uma tarefa contendo o <see cref="PolicyResult{Void}"/> da execução.</returns>
         public static Task<PolicyResult<Void>> ExecuteAndCaptureAsync(
             this IAsyncPolicy policy,
             Func<CancellationToken, Task> action,
@@ -113,6 +159,14 @@ namespace Vard.Builders
             }, cancellationToken);
         }
 
+        /// <summary>
+        /// Executa uma ação assíncrona com contexto sem retorno e captura o resultado da execução.
+        /// </summary>
+        /// <param name="policy">A política assíncrona a ser aplicada.</param>
+        /// <param name="action">A ação assíncrona sem retorno a ser executada com contexto.</param>
+        /// <param name="context">O dicionário de contexto compartilhado.</param>
+        /// <param name="cancellationToken">Token de cancelamento da operação.</param>
+        /// <returns>Uma tarefa contendo o <see cref="PolicyResult{Void}"/> da execução.</returns>
         public static Task<PolicyResult<Void>> ExecuteAndCaptureAsync(
             this IAsyncPolicy policy,
             Func<IDictionary<string, object>, CancellationToken, Task> action,
