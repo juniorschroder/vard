@@ -1,6 +1,9 @@
 # Vard
 
 <div align="center">
+  <img src="vard-banner.jpg" alt="Vard Banner" width="100%" />
+
+  <br/><br/>
 
 [![NuGet Version](https://img.shields.io/badge/nuget-v1.0.0-blue.svg)](https://www.nuget.org/packages/Vard/)
 [![Target Framework](https://img.shields.io/badge/.NET%20Standard-2.1%2B-purple.svg)](https://learn.microsoft.com/en-us/dotnet/standard/net-standard)
