@@ -13,6 +13,8 @@
 
 **Toolkit de resiliência e tolerância a falhas para .NET sem atrito, type-safe e com zero dependências externas.**
 
+**Português** | [English](README.en.md) | [Español](README.es.md)
+
 </div>
 
 ---
