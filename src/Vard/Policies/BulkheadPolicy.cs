@@ -39,10 +39,13 @@ namespace Vard.Policies
             _onBulkheadRejectedAsync = onBulkheadRejectedAsync;
         }
 
+        /// <inheritdoc />
         public int MaxParallelization => _maxParallelization;
 
+        /// <inheritdoc />
         public int MaxQueuedActions => _maxQueuedActions;
 
+        /// <inheritdoc />
         public int BulkheadAvailableCount
         {
             get
@@ -52,6 +55,7 @@ namespace Vard.Policies
             }
         }
 
+        /// <inheritdoc />
         public int QueueAvailableCount
         {
             get
@@ -61,9 +65,11 @@ namespace Vard.Policies
             }
         }
 
+        /// <inheritdoc />
         public TResult Execute<TResult>(Func<TResult> action)
             => Execute((_) => action(), context: null!);
 
+        /// <inheritdoc />
         public TResult Execute<TResult>(Func<IDictionary<string, object>, TResult> action, IDictionary<string, object> context)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
@@ -103,9 +109,11 @@ namespace Vard.Policies
             }
         }
 
+        /// <inheritdoc />
         public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action)
             => ExecuteAndCapture((_) => action(), context: null!);
 
+        /// <inheritdoc />
         public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<IDictionary<string, object>, TResult> action, IDictionary<string, object> context)
         {
             var sw = Stopwatch.StartNew();
@@ -127,11 +135,13 @@ namespace Vard.Policies
             }
         }
 
+        /// <inheritdoc />
         public Task<TResult> ExecuteAsync<TResult>(
             Func<CancellationToken, Task<TResult>> action,
             CancellationToken cancellationToken = default)
             => ExecuteAsync((_, ct) => action(ct), context: null!, cancellationToken);
 
+        /// <inheritdoc />
         public async Task<TResult> ExecuteAsync<TResult>(
             Func<IDictionary<string, object>, CancellationToken, Task<TResult>> action,
             IDictionary<string, object> context,
@@ -175,11 +185,13 @@ namespace Vard.Policies
             }
         }
 
+        /// <inheritdoc />
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(
             Func<CancellationToken, Task<TResult>> action,
             CancellationToken cancellationToken = default)
             => ExecuteAndCaptureAsync((_, ct) => action(ct), context: null!, cancellationToken);
 
+        /// <inheritdoc />
         public async Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(
             Func<IDictionary<string, object>, CancellationToken, Task<TResult>> action,
             IDictionary<string, object> context,
@@ -204,12 +216,19 @@ namespace Vard.Policies
             }
         }
 
+        /// <summary>
+        /// Libera os recursos gerenciados utilizados pela política de bulkhead (semáforos de concorrência e fila).
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Libera recursos não gerenciados e opcionalmente os gerenciados.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> para liberar recursos gerenciados e não gerenciados; <c>false</c> para liberar apenas não gerenciados.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)

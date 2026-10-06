@@ -13,10 +13,22 @@ namespace Vard.Policies
     /// </summary>
     public class PolicyWrap : IPolicy, ISyncPolicy, IAsyncPolicy
     {
+        /// <summary>
+        /// Obtém a política externa do pipeline (executada primeiro).
+        /// </summary>
         public IPolicy? OuterPolicy { get; }
+
+        /// <summary>
+        /// Obtém a política interna do pipeline (executada internamente).
+        /// </summary>
         public IPolicy? InnerPolicy { get; }
         internal readonly HandleCondition? Condition;
 
+        /// <summary>
+        /// Inicializa uma nova instância de <see cref="PolicyWrap"/> combinando duas políticas em sequência aninhada.
+        /// </summary>
+        /// <param name="outerPolicy">A política externa que envolve a execução.</param>
+        /// <param name="innerPolicy">A política interna envolvida na execução.</param>
         public PolicyWrap(IPolicy outerPolicy, IPolicy innerPolicy)
         {
             OuterPolicy = outerPolicy ?? throw new ArgumentNullException(nameof(outerPolicy));
@@ -30,6 +42,7 @@ namespace Vard.Policies
         }
 
         // IPolicy — sync
+        /// <inheritdoc />
         public TResult Execute<TResult>(Func<TResult> action)
         {
             if (OuterPolicy == null || InnerPolicy == null)
@@ -38,6 +51,7 @@ namespace Vard.Policies
             return OuterPolicy.Execute(() => InnerPolicy.Execute(action));
         }
 
+        /// <inheritdoc />
         public TResult Execute<TResult>(
             Func<IDictionary<string, object>, TResult> action,
             IDictionary<string, object> context)
@@ -48,6 +62,7 @@ namespace Vard.Policies
             return OuterPolicy.Execute(ctx => InnerPolicy.Execute(action, ctx), context);
         }
 
+        /// <inheritdoc />
         public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action)
         {
             if (OuterPolicy == null || InnerPolicy == null)
@@ -56,6 +71,7 @@ namespace Vard.Policies
             return OuterPolicy.ExecuteAndCapture(() => InnerPolicy.Execute(action));
         }
 
+        /// <inheritdoc />
         public PolicyResult<TResult> ExecuteAndCapture<TResult>(
             Func<IDictionary<string, object>, TResult> action,
             IDictionary<string, object> context)
@@ -67,6 +83,7 @@ namespace Vard.Policies
         }
 
         // IAsyncPolicy — async
+        /// <inheritdoc />
         public Task<TResult> ExecuteAsync<TResult>(
             Func<CancellationToken, Task<TResult>> action,
             CancellationToken cancellationToken = default)
@@ -79,6 +96,7 @@ namespace Vard.Policies
             return asyncOuter.ExecuteAsync(ct => asyncInner.ExecuteAsync(action, ct), cancellationToken);
         }
 
+        /// <inheritdoc />
         public Task<TResult> ExecuteAsync<TResult>(
             Func<IDictionary<string, object>, CancellationToken, Task<TResult>> action,
             IDictionary<string, object> context,
@@ -92,6 +110,7 @@ namespace Vard.Policies
             return asyncOuter.ExecuteAsync((ctx, ct) => asyncInner.ExecuteAsync(action, ctx, ct), context, cancellationToken);
         }
 
+        /// <inheritdoc />
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(
             Func<CancellationToken, Task<TResult>> action,
             CancellationToken cancellationToken = default)
@@ -104,6 +123,7 @@ namespace Vard.Policies
             return asyncOuter.ExecuteAndCaptureAsync(ct => asyncInner.ExecuteAsync(action, ct), cancellationToken);
         }
 
+        /// <inheritdoc />
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(
             Func<IDictionary<string, object>, CancellationToken, Task<TResult>> action,
             IDictionary<string, object> context,

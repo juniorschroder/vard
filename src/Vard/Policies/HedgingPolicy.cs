@@ -15,12 +15,30 @@ namespace Vard.Policies
     public class HedgingPolicy : IHedgingPolicy, IPolicy, ISyncPolicy, IAsyncPolicy
     {
         internal readonly HandleCondition _condition;
+        /// <summary>
+        /// Quantidade máxima de execuções especulativas adicionais.
+        /// </summary>
         protected readonly int _maxHedges;
+
+        /// <summary>
+        /// Função geradora de atrasos progressivos antes de cada tentativa hedged.
+        /// </summary>
         protected readonly Func<int, TimeSpan> _hedgingDelayProvider;
+
+        /// <summary>
+        /// Callback síncrono disparado quando uma execução especulativa produz um resultado ou exceção.
+        /// </summary>
         protected readonly Action<object?, int, TimeSpan, IDictionary<string, object>?>? _onHedgingResultSync;
+
+        /// <summary>
+        /// Callback assíncrono disparado quando uma execução especulativa produz um resultado ou exceção.
+        /// </summary>
         protected readonly Func<object?, int, TimeSpan, IDictionary<string, object>?, Task>? _onHedgingResultAsync;
 
+        /// <inheritdoc />
         public int MaxHedges => _maxHedges;
+
+        /// <inheritdoc />
         public TimeSpan HedgingDelay => _hedgingDelayProvider(1);
 
         internal HedgingPolicy(
@@ -63,9 +81,11 @@ namespace Vard.Policies
         }
 
         // IPolicy — Synchronous execution
+        /// <inheritdoc />
         public TResult Execute<TResult>(Func<TResult> action)
             => Execute(_ => action(), context: null!);
 
+        /// <inheritdoc />
         public TResult Execute<TResult>(Func<IDictionary<string, object>, TResult> action, IDictionary<string, object> context)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
@@ -83,9 +103,11 @@ namespace Vard.Policies
             }
         }
 
+        /// <inheritdoc />
         public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action)
             => ExecuteAndCapture(_ => action(), context: null!);
 
+        /// <inheritdoc />
         public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<IDictionary<string, object>, TResult> action, IDictionary<string, object> context)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
@@ -104,11 +126,13 @@ namespace Vard.Policies
         }
 
         // IAsyncPolicy — Asynchronous execution
+        /// <inheritdoc />
         public Task<TResult> ExecuteAsync<TResult>(
             Func<CancellationToken, Task<TResult>> action,
             CancellationToken cancellationToken = default)
             => ExecuteAsync((_, ct) => action(ct), context: null!, cancellationToken);
 
+        /// <inheritdoc />
         public async Task<TResult> ExecuteAsync<TResult>(
             Func<IDictionary<string, object>, CancellationToken, Task<TResult>> action,
             IDictionary<string, object> context,
@@ -134,11 +158,13 @@ namespace Vard.Policies
             return default!;
         }
 
+        /// <inheritdoc />
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(
             Func<CancellationToken, Task<TResult>> action,
             CancellationToken cancellationToken = default)
             => ExecuteAndCaptureAsync((_, ct) => action(ct), context: null!, cancellationToken);
 
+        /// <inheritdoc />
         public async Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(
             Func<IDictionary<string, object>, CancellationToken, Task<TResult>> action,
             IDictionary<string, object> context,

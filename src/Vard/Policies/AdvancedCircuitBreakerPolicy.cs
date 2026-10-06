@@ -73,6 +73,7 @@ namespace Vard.Policies
             _slidingWindow = new BucketedSlidingWindow(samplingDuration, bucketCount: 10, ticksProvider: _ticksProvider);
         }
 
+        /// <inheritdoc />
         public CircuitState CircuitState
         {
             get
@@ -86,6 +87,7 @@ namespace Vard.Policies
             }
         }
 
+        /// <inheritdoc />
         public Exception? LastException
         {
             get
@@ -97,6 +99,7 @@ namespace Vard.Policies
             }
         }
 
+        /// <inheritdoc />
         public void Isolate()
         {
             lock (_stateLock)
@@ -105,6 +108,7 @@ namespace Vard.Policies
             }
         }
 
+        /// <inheritdoc />
         public void Reset()
         {
             Action? onResetAction = null;
@@ -119,9 +123,11 @@ namespace Vard.Policies
             onResetAction?.Invoke();
         }
 
+        /// <inheritdoc />
         public TResult Execute<TResult>(Func<TResult> action)
             => Execute((_) => action(), context: null!);
 
+        /// <inheritdoc />
         public TResult Execute<TResult>(Func<IDictionary<string, object>, TResult> action, IDictionary<string, object> context)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
@@ -145,9 +151,11 @@ namespace Vard.Policies
             }
         }
 
+        /// <inheritdoc />
         public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<TResult> action)
             => ExecuteAndCapture((_) => action(), context: null!);
 
+        /// <inheritdoc />
         public PolicyResult<TResult> ExecuteAndCapture<TResult>(Func<IDictionary<string, object>, TResult> action, IDictionary<string, object> context)
         {
             var sw = Stopwatch.StartNew();
@@ -181,11 +189,13 @@ namespace Vard.Policies
             }
         }
 
+        /// <inheritdoc />
         public Task<TResult> ExecuteAsync<TResult>(
             Func<CancellationToken, Task<TResult>> action,
             CancellationToken cancellationToken = default)
             => ExecuteAsync((_, ct) => action(ct), context: null!, cancellationToken);
 
+        /// <inheritdoc />
         public async Task<TResult> ExecuteAsync<TResult>(
             Func<IDictionary<string, object>, CancellationToken, Task<TResult>> action,
             IDictionary<string, object> context,
@@ -218,11 +228,13 @@ namespace Vard.Policies
             }
         }
 
+        /// <inheritdoc />
         public Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(
             Func<CancellationToken, Task<TResult>> action,
             CancellationToken cancellationToken = default)
             => ExecuteAndCaptureAsync((_, ct) => action(ct), context: null!, cancellationToken);
 
+        /// <inheritdoc />
         public async Task<PolicyResult<TResult>> ExecuteAndCaptureAsync<TResult>(
             Func<IDictionary<string, object>, CancellationToken, Task<TResult>> action,
             IDictionary<string, object> context,
