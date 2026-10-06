@@ -40,7 +40,7 @@
   - [Pipeline Especulativo de Baixa Latência](#pipeline-especulativo-de-baixa-latência)
 - [Observabilidade, Contexto & PolicyResult](#observabilidade-contexto--policyresult)
 - [Vard vs Polly](#vard-vs-polly)
-- [Roadmap & Próximas Versões](#roadmap--próximas-versões)
+- [Roadmap & Futuras Implementações](#roadmap--futuras-implementações)
 - [Projeto de Demonstração (Demo)](#projeto-de-demonstração-demo)
 - [Qualidade & Testes](#qualidade--testes)
 - [Licença](#licença)
@@ -535,20 +535,21 @@ else
 
 ---
 
-## Roadmap & Próximas Versões
+## Roadmap & Futuras Implementações
 
-O desenvolvimento contínuo do **Vard** segue um planejamento estruturado para evoluir suas capacidades mantendo a integridade de performance e simplicidade da biblioteca:
+O desenvolvimento contínuo do **Vard** prevê a expansão de seus recursos em futuras versões. Abaixo está a relação das funcionalidades planejadas para implementação:
 
-### 🚀 v1.1.0 — Políticas e Utilitários Avançados (Zero Dependencies)
-- **`PolicyRegistry`:** Repositório nomeado centralizado para registrar, recuperar, compor e reutilizar políticas e pipelines de forma compartilhada na aplicação.
-- **`CachePolicy`:** Política de cache em memória para memorizar resultados de delegates idempotentes e evitar execuções desnecessárias.
-- **`FallbackPolicy` Aprimorado:** Suporte a chave e estratégias dinâmicas de degradação graciosa.
-- **Resiliência em Streaming (`IAsyncEnumerable<T>`):** Suporte nativo a operações de fluxo contínuo de dados com tratamento de `Retry` e `Timeout` por item ou pelo fluxo completo.
+### 1. Pacotes de Integração com o Ecossistema Moderno .NET (Pacotes Satélites)
+- **`Vard.Extensions.DependencyInjection`:** Métodos `services.AddVard()` para registro fluente e resolução no container nativo de injeção de dependências do .NET.
+- **`Vard.Extensions.Logging` / Telemetria:** Integração transparente com `ILogger` e métricas/tracing compatíveis com OpenTelemetry e Serilog.
 
-### 🌐 v2.0.0 — Pacotes de Integração com o Ecossistema Moderno .NET
-Pacotes satélites desacoplados (mantendo a lib core `Vard` 100% livre de dependências):
-- **`Vard.Extensions.DependencyInjection`:** Métodos fluentes `services.AddVard()` para registro declarativo e injeção de dependência no container nativo do .NET.
-- **`Vard.Extensions.Logging` / Telemetria:** Integração transparente com `ILogger` e exportação nativa de métricas e distributed tracing compatíveis com OpenTelemetry e Serilog.
+### 2. Políticas e Utilitários Avançados (Mantendo Zero Dependencies)
+- **`PolicyRegistry`:** Repositório nomeado centralizado para registrar, recuperar e reutilizar políticas e pipelines por toda a aplicação.
+- **`CachePolicy`:** Política de cache in-memory para memorizar resultados de delegates idempotentes e evitar processamento redundante.
+- **`FallbackPolicy` Aprimorado:** Suporte a chave de degradação graciosa com seleção de estratégias dinâmicas.
+
+### 3. Melhorias de Resiliência em Streaming
+- **Suporte a `IAsyncEnumerable<T>`:** Execução resiliente com tratamento de `Retry` e `Timeout` em fluxos contínuos de dados (streaming).
 
 ---
 
