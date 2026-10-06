@@ -22,6 +22,14 @@ namespace Vard.Abstractions
         /// </summary>
         public string AlgorithmName { get; }
 
+        /// <summary>
+        /// Inicializa uma nova instância de <see cref="RateLimiterRejectedException"/>.
+        /// </summary>
+        /// <param name="retryAfter">O tempo sugerido de espera antes de retentar a requisição.</param>
+        /// <param name="permitLimit">O limite de permits configurado na política.</param>
+        /// <param name="algorithmName">O algoritmo de rate limiting que efetuou a rejeição.</param>
+        /// <param name="message">Mensagem de erro descritiva opcional.</param>
+        /// <param name="innerException">Exceção interna opcional.</param>
         public RateLimiterRejectedException(
             TimeSpan retryAfter,
             int permitLimit,

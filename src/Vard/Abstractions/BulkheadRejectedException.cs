@@ -22,6 +22,14 @@ namespace Vard.Abstractions
         /// </summary>
         public BulkheadRejectionReason Reason { get; }
 
+        /// <summary>
+        /// Inicializa uma nova instância de <see cref="BulkheadRejectedException"/>.
+        /// </summary>
+        /// <param name="maxParallelization">O limite configurado de execuções concorrentes.</param>
+        /// <param name="maxQueuedActions">O limite configurado de itens na fila.</param>
+        /// <param name="reason">A causa da rejeição (<see cref="BulkheadRejectionReason"/>).</param>
+        /// <param name="message">Mensagem descritiva opcional.</param>
+        /// <param name="innerException">Exceção interna opcional.</param>
         public BulkheadRejectedException(
             int maxParallelization,
             int maxQueuedActions,

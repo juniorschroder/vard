@@ -30,13 +30,39 @@ namespace Vard.Abstractions
             Context = context;
         }
 
-        // D-02: 8 propriedades
+        /// <summary>
+        /// Indica se a execução foi concluída com sucesso.
+        /// </summary>
         public bool IsSuccess { get; }
+
+        /// <summary>
+        /// Obtém o resultado da execução quando <see cref="IsSuccess"/> for verdadeiro.
+        /// </summary>
         public T? Result { get; }
+
+        /// <summary>
+        /// Obtém a exceção capturada que disparou a política ou falha.
+        /// </summary>
         public Exception? Exception { get; }
+
+        /// <summary>
+        /// Obtém a exceção final após avaliação da política de resiliência.
+        /// </summary>
         public Exception? FinalException { get; }
+
+        /// <summary>
+        /// Obtém a classificação da exceção capturada (<see cref="ExceptionType"/>).
+        /// </summary>
         public ExceptionType ExceptionType { get; }
+
+        /// <summary>
+        /// Obtém a duração total gasta durante a execução da política.
+        /// </summary>
         public TimeSpan ExecutionTime { get; }
+
+        /// <summary>
+        /// Obtém o número da tentativa que produziu este resultado.
+        /// </summary>
         public int AttemptNumber { get; }
 
         /// <summary>
@@ -47,6 +73,11 @@ namespace Vard.Abstractions
         /// <summary>
         /// Cria um resultado de sucesso.
         /// </summary>
+        /// <param name="result">O valor de retorno da operação executada.</param>
+        /// <param name="context">O contexto compartilhado da execução.</param>
+        /// <param name="executionTime">O tempo total decorrido na execução.</param>
+        /// <param name="attemptNumber">O número da tentativa bem-sucedida.</param>
+        /// <returns>Uma nova instância de <see cref="PolicyResult{T}"/> indicando sucesso.</returns>
         public static PolicyResult<T> Success(
             T result,
             IDictionary<string, object>? context = null,
@@ -67,6 +98,13 @@ namespace Vard.Abstractions
         /// <summary>
         /// Cria um resultado de falha.
         /// </summary>
+        /// <param name="exception">A exceção capturada que causou a falha.</param>
+        /// <param name="exceptionType">A classificação da exceção em relação às regras da política.</param>
+        /// <param name="context">O contexto compartilhado da execução.</param>
+        /// <param name="executionTime">O tempo total decorrido até a falha.</param>
+        /// <param name="attemptNumber">O número de tentativas realizadas.</param>
+        /// <param name="finalException">A exceção final a ser exposta (padrão: mesma que <paramref name="exception"/>).</param>
+        /// <returns>Uma nova instância de <see cref="PolicyResult{T}"/> indicando falha.</returns>
         public static PolicyResult<T> Failure(
             Exception exception,
             ExceptionType exceptionType,
