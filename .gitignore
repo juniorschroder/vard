@@ -7,3 +7,7 @@ TestResults/
 .vs/
 *.user
 
+# NuGet packaging artifacts
+artifacts/
+*.nupkg
+*.snupkg
