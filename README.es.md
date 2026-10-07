@@ -2,8 +2,7 @@
 
 <div align="center">
   <img src="vard-banner.jpg" alt="Vard Banner" width="100%" />
-
-  <br/><br/>
+  <br/>
 
 [![NuGet Version](https://img.shields.io/badge/nuget-v1.0.0-blue.svg)](https://www.nuget.org/packages/Vard/)
 [![Target Framework](https://img.shields.io/badge/.NET%20Standard-2.1%2B-purple.svg)](https://learn.microsoft.com/es-es/dotnet/standard/net-standard)
@@ -259,7 +258,7 @@ var data = await timeout.ExecuteAsync(async ct =>
 });
 ```
 
-### 4. Fallback (Degradación Agraciada)
+### 4. Fallback
 
 Proporciona un valor alternativo, datos por defecto o respuesta desde caché cuando la operación principal falla.
 

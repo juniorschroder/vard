@@ -2,8 +2,7 @@
 
 <div align="center">
   <img src="vard-banner.jpg" alt="Vard Banner" width="100%" />
-
-  <br/><br/>
+  <br/>
 
 [![NuGet Version](https://img.shields.io/badge/nuget-v1.0.0-blue.svg)](https://www.nuget.org/packages/Vard/)
 [![Target Framework](https://img.shields.io/badge/.NET%20Standard-2.1%2B-purple.svg)](https://learn.microsoft.com/en-us/dotnet/standard/net-standard)
@@ -285,7 +284,7 @@ catch (TimeoutRejectedException ex)
 
 ---
 
-### 4. Fallback (Degradação Graciosa)
+### 4. Fallback
 
 Permite retornar um valor substituto, carregar dados de um cache local ou disparar um fluxo secundário quando a operação principal falha.
 

@@ -21,9 +21,10 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
 
-    <!-- Documentação XML e Empacotamento de README -->
+    <!-- Documentação XML, README e Ícone do Pacote -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
 
     <!-- Pacote de Símbolos -->
     <IncludeSymbols>true</IncludeSymbols>
@@ -37,6 +38,7 @@
     <None Include="../../README.en.md" Pack="true" PackagePath="\" />
     <None Include="../../README.es.md" Pack="true" PackagePath="\" />
     <None Include="../../vard-banner.jpg" Pack="true" PackagePath="\" />
+    <None Include="../../icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
