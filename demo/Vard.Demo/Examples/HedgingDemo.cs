@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Vard.Builders;
 
 namespace Vard.Demo.Examples

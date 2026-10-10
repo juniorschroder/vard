@@ -41,6 +41,7 @@
   - [Pipeline Especulativo de Baja Latencia](#pipeline-especulativo-de-baja-latencia)
 - [Observabilidad, Contexto & PolicyResult](#observabilidad-contexto--policyresult)
 - [Vard vs Polly](#vard-vs-polly)
+- [Migración Automatizada de Polly a Vard (AI Skill)](#migración-automatizada-de-polly-a-vard-ai-skill)
 - [Roadmap & Futuras Implementaciones](#roadmap--futuras-implementaciones)
 - [Proyecto de Demostración (Demo)](#proyecto-de-demostración-demo)
 - [Calidad & Pruebas](#calidad--pruebas)
@@ -400,6 +401,18 @@ else
 | **Recarga de Token Bucket** | **Matemática Lazy** (sin timers ociosos consumiendo ThreadPool) | Depende de instancias de `System.Threading.Timer` |
 | **Prueba Piloto en Half-Open** | **Atómica sin bloqueos** con `Interlocked.CompareExchange` | Presente, con abstracciones internas mayores |
 | **Curva de Aprendizaje & API** | **Directa y fluida**, unificada en un único namespace | Dividida entre arquitecturas legada (v7) y nueva (v8) |
+
+---
+
+## Migración Automatizada de Polly a Vard (AI Skill)
+
+Para facilitar la transición de proyectos existentes que utilizan Polly a **Vard**, este repositorio incluye una **AI Skill** optimizada (`skills/migrate-polly-to-vard/SKILL.md`) compatible con agentes de IA (Claude, Gemini, Codex, Antigravity, etc.).
+
+### Lo que la Skill hace automáticamente:
+1. **Auditoría del Código:** Localiza referencias de paquetes (`Polly`, `Polly.Core`, `Polly.Extensions.Http`, etc.) y directivas `using Polly...;`.
+2. **Sustitución de Paquetes:** Elimina las dependencias de Polly e instala el paquete `Vard` mediante la CLI de .NET.
+3. **Reescritura de Código:** Mapea llamadas heredadas de Polly (`WaitAndRetryAsync`, `CircuitBreakerAsync`, `TimeoutAsync`, `FallbackAsync`, `BulkheadAsync`, `WrapAsync`) a la API equivalente de Vard.
+4. **Validación y Pruebas:** Compila la solución (`dotnet build`) y ejecuta la suite de pruebas existente (`dotnet test`) para garantizar cero regresiones.
 
 ---
 

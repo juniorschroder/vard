@@ -41,6 +41,7 @@
   - [Low-Latency Speculative Pipeline](#low-latency-speculative-pipeline)
 - [Observability, Context & PolicyResult](#observability-context--policyresult)
 - [Vard vs Polly](#vard-vs-polly)
+- [Automated Migration from Polly to Vard (AI Skill)](#automated-migration-from-polly-to-vard-ai-skill)
 - [Roadmap & Future Implementations](#roadmap--future-implementations)
 - [Demo Project](#demo-project)
 - [Quality & Testing](#quality--testing)
@@ -400,6 +401,18 @@ else
 | **Token Bucket Refill** | **Lazy mathematical** (no idle timers consuming ThreadPool) | Relies on `System.Threading.Timer` instances |
 | **Half-Open Single Pilot Request** | **Atomic lock-free** with `Interlocked.CompareExchange` | Present, with heavier internal abstractions |
 | **Learning Curve & API** | **Direct & fluent**, unified under a single namespace | Split between legacy (v7) and new (v8) architectures |
+
+---
+
+## Automated Migration from Polly to Vard (AI Skill)
+
+To streamline migrating existing Polly-based projects to **Vard**, this repository includes an optimized **AI Skill** (`skills/migrate-polly-to-vard/SKILL.md`) compatible with AI coding agents (Claude, Gemini, Codex, Antigravity, etc.).
+
+### What the Skill Does Automatically:
+1. **Codebase Audit:** Scans for Polly packages (`Polly`, `Polly.Core`, `Polly.Extensions.Http`, etc.) and `using Polly...;` directives.
+2. **Package Swap:** Removes Polly packages and installs `Vard` via .NET CLI.
+3. **Code Rewriting:** Maps legacy Polly calls (`WaitAndRetryAsync`, `CircuitBreakerAsync`, `TimeoutAsync`, `FallbackAsync`, `BulkheadAsync`, `WrapAsync`) to equivalent Vard APIs.
+4. **Validation & Testing:** Builds the solution (`dotnet build`) and executes existing test suites (`dotnet test`) to ensure zero regressions.
 
 ---
 

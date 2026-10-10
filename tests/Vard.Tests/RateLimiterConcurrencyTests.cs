@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Vard.Abstractions;
 using Vard.Builders;
-using Vard.Policies;
 using Xunit;
 
 namespace Vard.Tests
